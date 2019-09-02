@@ -101,3 +101,59 @@ write.csv(
   file=file.path(vwap.data.file),
   row.names=F
 )
+
+##############################################################################
+## plot potential target variables
+
+my.vwap.xts <- vwap.xts
+colnames(my.vwap.xts) <- 'ZC'
+# plot(my.vwap.xts)
+
+# my.vwap.xts$Diff.1W <- diff(my.vwap.xts$ZC)
+# my.vwap.xts$Diff.2W <- diff(my.vwap.xts$ZC,2)
+my.vwap.xts$Diff.4W <- diff(my.vwap.xts$ZC,4)
+my.vwap.xts$Diff.6W <- diff(my.vwap.xts$ZC,6)
+my.vwap.xts$Diff.8W <- diff(my.vwap.xts$ZC,8)
+my.vwap.xts$PlotAdj <- 2*mean(abs(my.vwap.xts$Diff.6W), na.rm=T) * (my.vwap.xts$ZC - mean(my.vwap.xts$ZC)) / sd(my.vwap.xts$ZC)
+
+
+plot(my.vwap.xts[,-1])
+
+vwap.xts <- xts(vwap.df$vwap, date(vwap.df$Report.Date))
+colnames(vwap.xts) <- 'ZC'
+
+##############################################################################
+## independent variables
+
+
+# All categorical variables can be dropped since they only have one factor level
+cot.df[,c('Market.and.Exchange.Names','As.of.Date.in.Form.YYMMDD','As.of.Date.in.Form.YYYY.MM.DD',
+          'CFTC.Contract.Market.Code','CFTC.Market.Code.in.Initials','CFTC.Region.Code','CFTC.Commodity.Code',
+          'Contract.Units','CFTC.Contract.Market.Code..Quotes.','CFTC.Market.Code.in.Initials..Quotes.',
+          'CFTC.Commodity.Code..Quotes.')] <- list(NULL)
+
+### Convert all of cot.df to numeric type before xts conversion.
+
+cot.df <- data.frame(cot.df$Report.Date, sapply(cot.df[, names(cot.df) != "Report.Date"], as.numeric))
+names(cot.df)[1] <- 'Report.Date'
+
+# 0W diff
+cot.xts <- xts(cot.df[, names(cot.df) != "Report.Date"], date(cot.df$Report.Date))
+# 1W diff
+cot.1w.xts <- as.data.frame(lapply(cot.xts,diff,1))
+colnames(cot.1w.xts) <- c(sapply(colnames(cot.xts), function(x) paste0(x,'.1w.Diff')))
+# 2W diff
+cot.2w.xts <- as.data.frame(lapply(cot.xts,diff,2))
+colnames(cot.2w.xts) <- c(sapply(colnames(cot.xts), function(x) paste0(x,'.2w.Diff')))
+# 4W diff
+cot.4w.xts <- as.data.frame(lapply(cot.xts,diff,4))
+colnames(cot.4w.xts) <- c(sapply(colnames(cot.xts), function(x) paste0(x,'.4w.Diff')))
+# 6W diff
+cot.6w.xts <- as.data.frame(lapply(cot.xts,diff,6))
+colnames(cot.6w.xts) <- c(sapply(colnames(cot.xts), function(x) paste0(x,'.6w.Diff')))
+# 8w diff
+cot.8w.xts <- as.data.frame(lapply(cot.xts,diff,8))
+colnames(cot.8w.xts) <- c(sapply(colnames(cot.xts), function(x) paste0(x,'.8w.Diff')))
+# 12w diff
+cot.12w.xts <- as.data.frame(lapply(cot.xts,diff,12))
+colnames(cot.12w.xts) <- c(sapply(colnames(cot.xts), function(x) paste0(x,'.12w.Diff')))
