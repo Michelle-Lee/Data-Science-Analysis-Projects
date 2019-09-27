@@ -370,20 +370,16 @@ train_df['ylog'] = np.log(train_df['SalePrice'])
 #################### Modeling ####################
 
 '''
-#x_num = train_df.loc[:, train_df.columns != 'SalePrice'].select_dtypes(include=['int64','float64']).columns
-# x_obj = pd.DataFrame(train_df.loc[:, train_df.columns != 'SalePrice'].select_dtypes(include=['object'])).columns
-#trainDF = pd.DataFrame({'xn':[x_num], 'xo':[x_obj],'y':'SalePrice'})
 x_cols = "+".join(train_df.columns.difference(["SalePrice"]))
 lm_formula = "SalePrice~" + x_cols
 linModel = sm.ols(lm_formula, data = train_df).fit()
 print(linModel.params)
 print(linModel.summary())
 '''
-list2 = ['BsmtExposure_Scale', 'BsmtFinType1_Scale', 'BsmtFullBath', 
-'BsmtHeight_Scale', 'FuncDamage_Scale', 'GarageArea', #'GarageFinish_Scale', , 'exterQual_Scale','BsmtCond_Scale',  'isHip_Shed',
-'GrLivArea', 'KitchenQual_Scale', 'MSSubClass', 'Nbhd_Value', 'OverallCond', 
-'OverallQual', 'ScreenPorch', 'WoodDeckSF', 'isCDS_FR3',
-'isCondNormal', 'isNew_RegContract']
+list2 = ['BsmtExposure_Scale', 'BsmtFinType1_Scale', 'BsmtFullBath', 'BsmtHeight_Scale', 
+         'FuncDamage_Scale', 'GarageArea','GrLivArea', 'KitchenQual_Scale', 'MSSubClass', 
+         'Nbhd_Value', 'OverallCond','OverallQual', 'ScreenPorch', 'WoodDeckSF', 'isCDS_FR3',
+         'isCondNormal', 'isNew_RegContract']
 x_cols2 = "+".join(list2)
 #train_df['ylog'] = np.log(train_df['SalePrice'])
 
